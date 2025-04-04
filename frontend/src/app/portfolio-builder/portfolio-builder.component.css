@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  gap: 2rem;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.column {
+  flex: 1;
+  background: #f4f4f4;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.stock-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.stock-item {
+  background: #d9e8ff;
+  padding: 0.75rem;
+  border-radius: 4px;
+  cursor: grab;
+  text-align: center;
+  width: 80px;
+  border: 1px solid #b0c4de;
+}
+
+.drop-zone {
+  min-height: 200px;
+  background: #ffffff;
+  padding: 1rem;
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+}
+
+.portfolio-item {
+  display: flex;
+  justify-content: space-between;
+  background: #e0ffe0;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
