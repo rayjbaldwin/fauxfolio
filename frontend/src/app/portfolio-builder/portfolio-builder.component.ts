@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { SharesPromptComponent } from '../shares-prompt/shares-prompt.component'; // adjust the path as needed
+import { SharesPromptComponent } from '../shares-prompt/shares-prompt.component';
 
 @Component({
   selector: 'app-portfolio-builder',
   standalone: true,
-  imports: [CommonModule, MatDialogModule], // add other needed modules here
+  imports: [CommonModule, MatDialogModule],
   templateUrl: './portfolio-builder.component.html',
   styleUrls: ['./portfolio-builder.component.css']
 })
@@ -29,7 +29,7 @@ export class PortfolioBuilderComponent {
     const ticker = event.dataTransfer?.getData('text/plain');
     if (!ticker) return;
 
-    // Open the Angular Material dialog
+
     const dialogRef = this.dialog.open(SharesPromptComponent, {
       data: { ticker },
       width: '300px'
