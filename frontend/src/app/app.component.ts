@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import {PortfolioBuilderComponent} from './portfolio-builder/portfolio-builder.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
-  imports: [PortfolioBuilderComponent],
-  templateUrl: './app.component.html',
   standalone: true,
-  styleUrl: './app.component.css'
+  imports: [RouterOutlet, HttpClientModule],
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
   title = 'Capstone';

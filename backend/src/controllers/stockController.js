@@ -1,31 +1,17 @@
-// src/controllers/stockController.js
-const stockService = require('../services/stockService');
+const pool = require('../db');
 
-class StockController {
-  async getStockPrices(req, res) {
-    try {
-      const { ticker, startDate, endDate } = req.query;
-
-      if (!ticker || !startDate || !endDate) {
-        return res.status(400).json({
-          error: 'Missing required parameters: ticker, startDate, and endDate are required'
-        });
-      }
-
-      const stockPrices = await stockService.getOrFetchStockPrices(ticker, startDate, endDate);
-
-      return res.json({
-        ticker,
-        startDate,
-        endDate,
-        priceCount: stockPrices.length,
-        prices: stockPrices
-      });
-    } catch (error) {
-      console.error('Error in getStockPrices controller:', error);
-      return res.status(500).json({ error: 'Failed to retrieve stock prices' });
-    }
+async function saveStockPrice(ticker, date, closePrice) {
+  const query = `
+    INSERT INTO historical_prices (ticker, date, close_price)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (ticker, date) DO UPDATE SET close_price = EXCLUDED.close_price;
+  `;
+  try {
+    await pool.query(query, [ticker, date, closePrice]);
+    console.log(`Saved ${ticker} on ${date}`);
+  } catch (error) {
+    console.error("Error saving stock price:", error.message);
   }
 }
 
-module.exports = new StockController();
+module.exports = { saveStockPrice };

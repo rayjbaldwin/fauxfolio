@@ -1,8 +1,11 @@
 const express = require('express');
-const portfolioController = require('../controllers/portfolioController');
-
 const router = express.Router();
+const portfolioController = require('../controllers/portfolioController');
+const { authenticateToken } = require('../middleware/authMiddleware');
 
-router.post('/values-filled', portfolioController.getPortfolioValuesByDateRange);
+router.use(authenticateToken);
+router.post('/', portfolioController.createPortfolio);
+router.get('/:id', portfolioController.getPortfolio);
+router.put('/:id', portfolioController.updatePortfolio);
 
 module.exports = router;
