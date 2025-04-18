@@ -1,0 +1,8 @@
+<h2>Create New Portfolio</h2>
+<form (ngSubmit)="createPortfolio()" #portfolioForm="ngForm">
+  <label for="name">Portfolio Name:</label>
+  <input type="text" id="name" [(ngModel)]="portfolioName" name="name" required />
+  <br />
+  <button type="submit">Save Portfolio</button>
+</form>
+<p *ngIf="errorMessage" style="color: red">{{ errorMessage }}</p>

@@ -3,7 +3,7 @@
     <h2>Available Stocks</h2>
     <div class="stock-list">
       <div
-        *ngFor="let stock of stocks"
+        *ngFor="let stock of availableStocks"
         class="stock-item"
         draggable="true"
         (dragstart)="onDragStart($event, stock)">
@@ -13,10 +13,12 @@
   </div>
 
   <div class="column">
-    <h2>Your Portfolio</h2>
+    <h2>Your Portfolio ({{ portfolio?.name || 'Unnamed' }})</h2>
     <div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
-      <p *ngIf="portfolio.length === 0">Drag stocks here to build your portfolio</p>
-      <div *ngFor="let item of portfolio" class="portfolio-item">
+      <p *ngIf="!portfolio?.stocks || portfolio?.stocks?.length === 0">
+        Drag stocks here to build your portfolio
+      </p>
+      <div *ngFor="let item of portfolio?.stocks" class="portfolio-item">
         <span>{{ item.ticker }}</span>
         <span>{{ item.shares }} shares</span>
       </div>

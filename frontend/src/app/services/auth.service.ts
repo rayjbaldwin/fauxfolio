@@ -3,14 +3,23 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+interface LoginResponse {
+  token: string;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private apiUrl = 'http://localhost:3000/api/auth';
   private tokenKey = 'jwt_token';
-
   private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
+  private currentUser: any = null;
 
   constructor(private http: HttpClient) {}
 
@@ -18,24 +27,26 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, { username, email, password });
   }
 
-  login(email: string, password: string): Observable<any> {
-    return this.http.post<{ token: string }>(`${this.apiUrl}/login`, { email, password })
+  login(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { email, password })
       .pipe(
         tap(response => {
           localStorage.setItem(this.tokenKey, response.token);
           this.loggedIn.next(true);
+          this.currentUser = response.user;
         })
       );
   }
 
-  logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    this.loggedIn.next(false);
-  }
-
-  isLoggedIn(): Observable<boolean> {
-    return this.loggedIn.asObservable();
-  }
+  // logout(): void {
+  //   localStorage.removeItem(this.tokenKey);
+  //   this.loggedIn.next(false);
+  //   this.currentUser = null;
+  // }
+  //
+  // isLoggedIn(): Observable<boolean> {
+  //   return this.loggedIn.asObservable();
+  // }
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
@@ -43,5 +54,9 @@ export class AuthService {
 
   private hasToken(): boolean {
     return !!localStorage.getItem(this.tokenKey);
+  }
+
+  getCurrentUser(): any {
+    return this.currentUser;
   }
 }

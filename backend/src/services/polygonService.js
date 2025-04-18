@@ -1,18 +1,18 @@
 const axios = require('axios');
 const moment = require('moment-timezone');
 const { saveStockPrice } = require('../controllers/stockController');
+const pool = require('../db');
 require('dotenv').config();
 
 const Holidays = require('date-holidays');
 const hd = new Holidays('US');
 
-function isTradingDay(date) {
-  const etDate = moment.tz(date, 'America/New_York');
-  const dayOfWeek = etDate.day();  // 0 = Sunday, 6 = Saturday
+function isTradingDay(mDate) {
+  const dayOfWeek = mDate.day();
   if (dayOfWeek === 0 || dayOfWeek === 6) {
     return false;
   }
-  const holiday = hd.isHoliday(etDate.toDate());
+  const holiday = hd.isHoliday(mDate.toDate());
   return !holiday;
 }
 
@@ -39,27 +39,55 @@ async function fetchStockPrice(ticker, dateStr) {
   }
 }
 
-async function fetchStockHistory(ticker, startDate, endDate) {
-  let currentDate = new Date(startDate);
-  const finalDate = new Date(endDate);
-
-  while (currentDate <= finalDate) {
-    const etDate = moment.tz(currentDate, 'America/New_York');
-    if (isTradingDay(currentDate)) {
-      const dateStr = etDate.format('YYYY-MM-DD');
-      const stockData = await fetchStockPrice(ticker, dateStr);
-      if (stockData) {
-        await saveStockPrice(
-          stockData.ticker,
-          stockData.date,
-          stockData.closePrice
-        );
-      }
-    } else {
-      console.log(`Skipping ${ticker} on ${etDate.format('YYYY-MM-DD')}: non-trading day.`);
-    }
-    currentDate.setDate(currentDate.getDate() + 1);
+async function getCachedStockPrice(ticker, dateStr) {
+  const result = await pool.query(
+    'SELECT close_price FROM historical_prices WHERE ticker = $1 AND date = $2',
+    [ticker, dateStr]
+  );
+  if (result.rows.length > 0) {
+    console.log(`Cache hit for ${ticker} on ${dateStr}`);
+    return {
+      stockData: { ticker, date: dateStr, closePrice: result.rows[0].close_price },
+      cached: true
+    };
   }
+  const stockData = await fetchStockPrice(ticker, dateStr);
+  if (stockData) {
+    console.log(`Cache miss: Fetched and saving ${ticker} on ${dateStr}`);
+    await saveStockPrice(stockData.ticker, dateStr, stockData.closePrice);
+  }
+  return { stockData, cached: false };
 }
+
+
+async function fetchStockHistory(ticker, startDate, endDate) {
+  let currentMoment = moment.tz(startDate, 'YYYY-MM-DD', 'America/New_York');
+  const endMoment = moment.tz(endDate, 'YYYY-MM-DD', 'America/New_York');
+
+  const fetchPromises = [];
+
+  while (currentMoment.isSameOrBefore(endMoment)) {
+    if (isTradingDay(currentMoment)) {
+      const dateStr = currentMoment.format('YYYY-MM-DD');
+      fetchPromises.push(
+        getCachedStockPrice(ticker, dateStr)
+          .then(({ stockData, cached }) => {
+            if (stockData) {
+              if (cached) {
+                console.log(`(Cache) ${ticker} on ${dateStr}`);
+              } else {
+                console.log(`(Saved fresh) ${ticker} on ${dateStr}`);
+              }
+            }
+          })
+      );
+    } else {
+      console.log(`Skipping ${ticker} on ${currentMoment.format('YYYY-MM-DD')}: non-trading day.`);
+    }
+    currentMoment.add(1, 'days');
+  }
+  await Promise.all(fetchPromises);
+}
+
 
 module.exports = { fetchStockPrice, fetchStockHistory, isTradingDay };

@@ -20,10 +20,8 @@ export class RegisterComponent {
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit(): void {
-    // Call the register function from the AuthService
     this.authService.register(this.username, this.email, this.password).subscribe({
       next: (response) => {
-        // Optionally, navigate to the login page once registration is successful.
         this.router.navigate(['/login']);
       },
       error: (err) => {

@@ -20,7 +20,7 @@ export class LoginComponent {
   onSubmit(): void {
     this.authService.login(this.email, this.password).subscribe({
       next: () => {
-        this.router.navigate(['/']); // or route to a dashboard or portfolio page
+        this.router.navigate(['/create-portfolio']);
       },
       error: err => {
         this.errorMessage = err.error.message || 'Login failed';
