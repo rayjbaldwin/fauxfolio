@@ -1,8 +1,10 @@
 const express = require('express');
-const { saveStockPrice } = require('../controllers/stockController');
+const { saveStockPrice, listStocks } = require('../controllers/stockController');
 const { fetchStockHistory } = require('../services/polygonService');
 
 const router = express.Router();
+
+router.get('/', listStocks);
 
 router.post('/history', async (req, res) => {
   const { ticker, startDate, endDate } = req.body;

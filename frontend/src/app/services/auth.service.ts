@@ -38,16 +38,6 @@ export class AuthService {
       );
   }
 
-  // logout(): void {
-  //   localStorage.removeItem(this.tokenKey);
-  //   this.loggedIn.next(false);
-  //   this.currentUser = null;
-  // }
-  //
-  // isLoggedIn(): Observable<boolean> {
-  //   return this.loggedIn.asObservable();
-  // }
-
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }

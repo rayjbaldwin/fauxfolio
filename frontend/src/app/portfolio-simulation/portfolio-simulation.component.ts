@@ -1,54 +1,70 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PortfolioService } from '../services/portfolio.service';
-import { Chart, registerables } from 'chart.js';
-import { Subscription } from 'rxjs';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy }            from '@angular/core';
+import { ActivatedRoute }                            from '@angular/router';
+import { PortfolioService }                          from '../services/portfolio.service';
+import { Chart, registerables }                      from 'chart.js';
+import { Subscription }                              from 'rxjs';
+import { CommonModule, NgForOf, NgIf }               from '@angular/common';
+import { FormsModule }                               from '@angular/forms';
 
 Chart.register(...registerables);
 
+interface PortfolioSummary {
+  id:   number;
+  name: string;
+}
+
 @Component({
   selector: 'app-portfolio-simulation',
-  templateUrl: './portfolio-simulation.component.html',
-  styleUrls: ['./portfolio-simulation.component.css'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [CommonModule, FormsModule, NgForOf, NgIf],
+  templateUrl: './portfolio-simulation.component.html',
+  styleUrls: ['./portfolio-simulation.component.css']
 })
 export class PortfolioSimulationComponent implements OnInit, OnDestroy {
-  simulationChart: Chart | null = null;
-  portfolioId = 3; // I will need to fix this
-  startDate = '2025-01-01';
-  endDate = '2025-04-17';
-  private subscription: Subscription | null = null;
+  portfolios: PortfolioSummary[] = [];
+  selectedId!: number;
 
-  constructor(private portfolioService: PortfolioService) {}
+  private subscription: Subscription | null = null;
+  simulationChart: Chart | null = null;
+
+  startDate = '2025-03-03';
+  endDate   = '2025-05-02';
+
+  constructor(
+    private route: ActivatedRoute,
+    private portfolioService: PortfolioService
+  ) {}
 
   ngOnInit(): void {
-    this.getSimulationData();
+    this.portfolioService.getUserPortfolios().subscribe({
+      next: list => {
+        this.portfolios = list;
+        const paramId = this.route.snapshot.params['id'];
+        this.selectedId = paramId ? +paramId : list[0]?.id;
+        this.runSimulation();
+      },
+      error: err => console.error('Could not load portfolios:', err)
+    });
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
-
-    if (this.simulationChart) {
-      this.simulationChart.destroy();
-    }
+    this.subscription?.unsubscribe();
+    this.simulationChart?.destroy();
   }
 
-  getSimulationData(): void {
-    this.subscription = this.portfolioService.simulatePortfolio(this.portfolioId, this.startDate, this.endDate)
+  runSimulation(): void {
+    if (!this.selectedId) return;
+    this.subscription?.unsubscribe();
+
+    this.subscription = this.portfolioService
+      .simulatePortfolio(this.selectedId, this.startDate, this.endDate)
       .subscribe({
-        next: (data) => {
-          this.renderChart(data.dates, data.portfolio_values);
-        },
-        error: (error) => {
-          console.error('Error fetching simulation data', error);
-        }
+        next: data => this.renderChart(data.dates, data.portfolio_values),
+        error: err => console.error('Simulation error:', err)
       });
   }
 
-  renderChart(labels: string[], values: number[]): void {
+  private renderChart(labels: string[], values: number[]): void {
     if (this.simulationChart) {
       this.simulationChart.destroy();
     }
@@ -58,7 +74,6 @@ export class PortfolioSimulationComponent implements OnInit, OnDestroy {
       console.error('Canvas element "simulationChart" not found');
       return;
     }
-
     const ctx = canvas.getContext('2d');
     if (!ctx) {
       console.error('Could not get 2d context from canvas');
@@ -68,7 +83,7 @@ export class PortfolioSimulationComponent implements OnInit, OnDestroy {
     this.simulationChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: labels,
+        labels,
         datasets: [{
           label: 'Portfolio Value',
           data: values,
@@ -77,9 +92,7 @@ export class PortfolioSimulationComponent implements OnInit, OnDestroy {
           tension: 0.1
         }]
       },
-      options: {
-        responsive: true
-      }
+      options: { responsive: true }
     });
   }
 }

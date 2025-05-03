@@ -1,20 +1,38 @@
 <div class="container">
   <div class="column">
     <h2>Available Stocks</h2>
-    <div class="stock-list">
+
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Search by ticker or company name…"
+        [(ngModel)]="searchTerm"
+      />
+    </div>
+
+    <div class="stock-list scrollable">
       <div
-        *ngFor="let stock of availableStocks"
+        *ngFor="let stock of filteredStocks"
         class="stock-item"
         draggable="true"
-        (dragstart)="onDragStart($event, stock)">
-        {{ stock }}
+        (dragstart)="onDragStart($event, stock.ticker)"
+      >
+        <strong>{{ stock.ticker }}</strong> <br> — <br> {{ stock.name }}
       </div>
+      <p *ngIf="filteredStocks.length === 0">
+        No matching stocks found.
+      </p>
     </div>
   </div>
 
   <div class="column">
-    <h2>Your Portfolio ({{ portfolio?.name || 'Unnamed' }})</h2>
-    <div class="drop-zone" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+    <h2>{{ portfolio?.name || 'Unnamed' }}</h2>
+
+    <div
+      class="drop-zone"
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event)"
+    >
       <p *ngIf="!portfolio?.stocks || portfolio?.stocks?.length === 0">
         Drag stocks here to build your portfolio
       </p>
@@ -24,4 +42,10 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="simulate-row" *ngIf="portfolio">
+  <button (click)="goToSimulation()" class="simulate-btn">
+    Simulate this Portfolio
+  </button>
 </div>

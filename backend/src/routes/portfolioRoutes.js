@@ -1,11 +1,20 @@
 const express = require('express');
-const router = express.Router();
-const portfolioController = require('../controllers/portfolioController');
+const {
+  listPortfolios,
+  getPortfolio,
+  simulatePortfolio,
+  createPortfolio,
+  updatePortfolio
+} = require('../controllers/portfolioController');
 const { authenticateToken } = require('../middleware/authMiddleware');
 
-// router.use(authenticateToken);
-router.post('/', portfolioController.createPortfolio);
-router.get('/:id', portfolioController.getPortfolio);
-router.put('/:id', portfolioController.updatePortfolio);
-router.get('/:id/simulate',portfolioController.simulatePortfolio);
+const router = express.Router();
+
+router.use(authenticateToken);
+router.get('/', listPortfolios);
+router.post('/', createPortfolio);
+router.get('/:id', getPortfolio);
+router.put('/:id', updatePortfolio);
+router.get('/:id/simulate', simulatePortfolio);
+
 module.exports = router;

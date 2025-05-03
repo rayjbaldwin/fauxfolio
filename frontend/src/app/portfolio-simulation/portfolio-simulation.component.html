@@ -1,2 +1,20 @@
-<h2>Portfolio Simulation</h2>
-<canvas id="simulationChart"></canvas>
+<div class="simulation-container">
+
+  <div class="selector" *ngIf="portfolios.length">
+    <label for="portfolioSelect">Choose a portfolio:</label>
+    <select
+      id="portfolioSelect"
+      [(ngModel)]="selectedId"
+      (ngModelChange)="runSimulation()"
+    >
+      <option *ngFor="let p of portfolios" [value]="p.id">
+        {{ p.name }}
+      </option>
+    </select>
+  </div>
+
+  <div class="chart-wrapper">
+    <canvas id="simulationChart"></canvas>
+  </div>
+
+</div>

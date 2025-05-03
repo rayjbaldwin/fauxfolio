@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use('/api/stocks', stockRoutes);
 app.use('/api/portfolios', portfolioRoutes);
 app.use('/api/auth', authRoutes);
-
+app.use('/api/stocks', stockRoutes);
 app.get('/', (req, res) => {
   res.send('Backend is running.');
 });

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
+export interface PortfolioSummary { id: number; name: string; }
 @Injectable({
   providedIn: 'root'
 })
@@ -23,6 +23,10 @@ export class PortfolioService {
     return this.http.put(`${this.portfolioUrl}/${id}`, { stocks });
   }
 
+  getUserPortfolios(): Observable<PortfolioSummary[]> {
+    return this.http.get<PortfolioSummary[]>(this.portfolioUrl);
+  }
+
   simulatePortfolio(id: number, startDate: string, endDate: string): Observable<any> {
     return this.http.get(`${this.portfolioUrl}/${id}/simulate?startDate=${startDate}&endDate=${endDate}`);
   }
@@ -30,4 +34,9 @@ export class PortfolioService {
   fetchStockHistory(ticker: string, startDate: string, endDate: string): Observable<any> {
     return this.http.post(`${this.stockUrl}/history`, { ticker, startDate, endDate });
   }
+
+  getAllStocks(): Observable<{ ticker: string; name: string }[]> {
+    return this.http.get<{ ticker: string; name: string }[]>(`${this.stockUrl}`);
+  }
 }
+

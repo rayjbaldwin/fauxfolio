@@ -23,22 +23,28 @@ async function createPortfolio(req, res) {
 async function getPortfolio(req, res) {
   const { id } = req.params;
   try {
-    const portfolioResult = await pool.query(
-      'SELECT * FROM portfolios WHERE id = $1',
+    const portRes = await pool.query(
+      'SELECT id, name, user_id FROM portfolios WHERE id = $1',
       [id]
     );
-    if (portfolioResult.rows.length === 0) {
+    if (portRes.rows.length === 0) {
       return res.status(404).json({ message: 'Portfolio not found.' });
     }
-    const portfolio = portfolioResult.rows[0];
-    const stocksResult = await pool.query(
+    const portfolio = portRes.rows[0];
+
+    if (portfolio.user_id !== req.user.user_id) {
+      return res.status(403).json({ message: 'Access denied.' });
+    }
+
+    const stocksRes = await pool.query(
       'SELECT ticker, shares FROM portfolio_stocks WHERE portfolio_id = $1',
       [id]
     );
-    portfolio.stocks = stocksResult.rows;
+    portfolio.stocks = stocksRes.rows;
+
     res.json(portfolio);
-  } catch (error) {
-    console.error('Error retrieving portfolio:', error.message);
+  } catch (err) {
+    console.error('Error retrieving portfolio:', err.message);
     res.status(500).json({ message: 'Error retrieving portfolio.' });
   }
 }
@@ -70,56 +76,89 @@ async function updatePortfolio(req, res) {
 async function simulatePortfolio(req, res) {
   const { id } = req.params;
   const { startDate, endDate } = req.query;
-
+  const DATE_FMT = 'YYYY-MM-DD'
   if (!startDate || !endDate) {
-    return res.status(400).json({ message: 'startDate and endDate are required.' });
+    return res
+      .status(400)
+      .json({ message: 'startDate and endDate are required.' });
   }
-
   try {
-    const stocksResult = await pool.query(
+    const portRes = await pool.query(
+      'SELECT user_id FROM portfolios WHERE id = $1',
+      [id]
+    );
+    if (portRes.rows.length === 0) {
+      return res.status(404).json({ message: 'Portfolio not found.' });
+    }
+    if (portRes.rows[0].user_id !== req.user.user_id) {
+      return res.status(403).json({ message: 'Access denied.' });
+    }
+
+    const stocksRes = await pool.query(
       'SELECT ticker, shares FROM portfolio_stocks WHERE portfolio_id = $1',
       [id]
     );
-
-    if (stocksResult.rows.length === 0) {
-      return res.status(404).json({ message: 'No stocks found for this portfolio.' });
+    const stocks = stocksRes.rows;
+    if (stocks.length === 0) {
+      return res
+        .status(404)
+        .json({ message: 'No stocks found for this portfolio.' });
     }
 
-    const stocks = stocksResult.rows; // array of {ticker, shares}
+    const dates = [];
+    const portfolioVals = [];
+    let current = moment(startDate, DATE_FMT);
+    const end = moment(endDate, DATE_FMT);
 
-    let dates = [];
-    let portfolio_values = [];
-
-    let currentDate = moment(startDate, 'YYYY-MM-DD');
-    const finalDate = moment(endDate, 'YYYY-MM-DD');
-
-    while (currentDate <= finalDate) {
+    while (current.isSameOrBefore(end)) {
+      const dateStr = current.format(DATE_FMT);
       let totalValue = 0;
-      let dateStr = currentDate.format('YYYY-MM-DD');
 
-      for (const stock of stocks) {
-        const priceResult = await pool.query(
-          'SELECT close_price FROM historical_prices WHERE ticker = $1 AND date = $2',
-          [stock.ticker, dateStr]
+      for (const { ticker, shares } of stocks) {
+        const priceRes = await pool.query(
+          `SELECT close_price
+             FROM historical_prices
+            WHERE ticker = $1
+              AND date <= $2::date
+         ORDER BY date DESC
+            LIMIT 1`,
+          [ticker, dateStr]
         );
-        if (priceResult.rows.length > 0) {
-          const closePrice = parseFloat(priceResult.rows[0].close_price);
-          totalValue += closePrice * parseFloat(stock.shares);
+        if (priceRes.rows.length > 0) {
+          totalValue +=
+            parseFloat(priceRes.rows[0].close_price) *
+            parseFloat(shares);
         }
       }
+
       dates.push(dateStr);
-      portfolio_values.push(totalValue);
-      currentDate.add(1, 'days');
+      portfolioVals.push(totalValue);
+      current.add(1, 'days');
     }
 
-    res.json({
-      dates,
-      portfolio_values
-    });
+    res.json({ dates, portfolio_values: portfolioVals });
+  } catch (err) {
+    console.error('Error simulating portfolio:', err.message);
+    res
+      .status(500)
+      .json({ message: 'Error simulating portfolio performance.' });
+  }
+}
 
-  } catch (error) {
-    console.error('Error simulating portfolio:', error.message);
-    res.status(500).json({ message: 'Error simulating portfolio performance.' });
+async function listPortfolios(req, res) {
+  const userId = req.user.user_id;
+  try {
+    const result = await pool.query(
+      `SELECT id, name
+         FROM portfolios
+        WHERE user_id = $1
+     ORDER BY created_at DESC`,
+      [userId]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error listing portfolios:', err.message);
+    res.status(500).json({ message: 'Could not list portfolios.' });
   }
 }
 
@@ -127,5 +166,6 @@ module.exports = {
   createPortfolio,
   getPortfolio,
   updatePortfolio,
-  simulatePortfolio
+  simulatePortfolio,
+  listPortfolios
 };

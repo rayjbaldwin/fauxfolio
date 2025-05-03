@@ -1,5 +1,15 @@
 const pool = require('../db');
 
+async function listStocks(req, res) {
+  try {
+    const result = await pool.query('SELECT ticker, name FROM stocks ORDER BY ticker');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error listing stocks:', err);
+    res.status(500).json({ message: 'Could not list stocks' });
+  }
+}
+
 async function saveStockPrice(ticker, date, closePrice) {
   const query = `
     INSERT INTO historical_prices (ticker, date, close_price)
@@ -14,4 +24,4 @@ async function saveStockPrice(ticker, date, closePrice) {
   }
 }
 
-module.exports = { saveStockPrice };
+module.exports = { saveStockPrice, listStocks };

@@ -1,7 +1,7 @@
 .container {
   display: flex;
   gap: 2rem;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 2rem auto;
   padding: 1rem;
 }
@@ -26,8 +26,13 @@
   border-radius: 4px;
   cursor: grab;
   text-align: center;
-  width: 80px;
+  width: 100px;
   border: 1px solid #b0c4de;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .drop-zone {
@@ -45,4 +50,42 @@
   margin-bottom: 0.5rem;
   padding: 0.5rem;
   border-radius: 4px;
+}
+
+
+.stock-list.scrollable {
+  max-height: 300px;
+  overflow-y: auto;
+  border: none;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+
+}
+.search-box input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  box-sizing: border-box;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+}
+
+.simulate-row {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.simulate-btn {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.simulate-btn:hover {
+  background-color: #0056b3;
 }
