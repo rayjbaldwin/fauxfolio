@@ -76,7 +76,7 @@ async function updatePortfolio(req, res) {
 async function simulatePortfolio(req, res) {
   const { id } = req.params;
   const { startDate, endDate } = req.query;
-  const DATE_FMT = 'YYYY-MM-DD'
+
   if (!startDate || !endDate) {
     return res
       .status(400)
@@ -104,7 +104,7 @@ async function simulatePortfolio(req, res) {
         .status(404)
         .json({ message: 'No stocks found for this portfolio.' });
     }
-
+    const DATE_FMT = 'YYYY-MM-DD'
     const dates = [];
     const portfolioVals = [];
     let current = moment(startDate, DATE_FMT);

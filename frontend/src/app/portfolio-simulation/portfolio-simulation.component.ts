@@ -68,6 +68,9 @@ export class PortfolioSimulationComponent implements OnInit, OnDestroy {
     if (this.simulationChart) {
       this.simulationChart.destroy();
     }
+    const first = values[0] ?? 0;
+    const last  = values[values.length - 1] ?? 0;
+    const trendColor = last >= first ? '#4CD863' : '#FE3B2F';
 
     const canvas = document.getElementById('simulationChart') as HTMLCanvasElement;
     if (!canvas) {
@@ -88,7 +91,8 @@ export class PortfolioSimulationComponent implements OnInit, OnDestroy {
           label: 'Portfolio Value',
           data: values,
           fill: false,
-          borderColor: 'blue',
+          borderColor: trendColor,
+          pointBackgroundColor: trendColor,
           tension: 0.1
         }]
       },

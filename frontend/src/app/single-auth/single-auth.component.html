@@ -1,0 +1,103 @@
+<div class="auth-container">
+
+  <div class="card">
+    <div class="card2">
+      <form class="form" (ngSubmit)="onLogin()">
+        <p id="heading">Login</p>
+
+        <div class="field">
+          <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M1.5 3h13a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9A.5.5 0 0 1 1.5 3zm0 1v1.607l6.396 3.4a.5.5 0 0 0 .408 0L13.5 5.607V4H1.5zM14 12V6.628l-5.396 2.865a1.5 1.5 0 0 1-1.208 0L2 6.628V12h12z"/>
+          </svg>
+          <input
+            class="input-field"
+            type="email"
+            placeholder="Email"
+            [(ngModel)]="loginEmail"
+            name="loginEmail"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+          </svg>
+          <input
+            class="input-field"
+            type="password"
+            placeholder="Password"
+            [(ngModel)]="loginPassword"
+            name="loginPassword"
+            required
+          />
+        </div>
+
+        <div class="btn">
+          <button type="submit" class="button1">Login</button>
+        </div>
+
+        <p *ngIf="loginError" class="error">{{ loginError }}</p>
+      </form>
+    </div>
+  </div>
+
+  <div class="separator"></div>
+
+  <div class="card">
+    <div class="card2">
+      <form class="form" (ngSubmit)="onRegister()">
+        <p id="heading">Register</p>
+
+        <div class="field">
+          <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm4.5 1a4.5 4.5 0 1 1-9 0c0-1.657 1.343-3 3-3h3c1.657 0 3 1.343 3 3z"/>
+          </svg>
+          <input
+            class="input-field"
+            type="text"
+            placeholder="Username"
+            [(ngModel)]="regUsername"
+            name="regUsername"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M1.5 3h13a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9A.5.5 0 0 1 1.5 3zm0 1v1.607l6.396 3.4a.5.5 0 0 0 .408 0L13.5 5.607V4H1.5zM14 12V6.628l-5.396 2.865a1.5 1.5 0 0 1-1.208 0L2 6.628V12h12z"/>
+          </svg>
+          <input
+            class="input-field"
+            type="email"
+            placeholder="Email"
+            [(ngModel)]="regEmail"
+            name="regEmail"
+            required
+          />
+        </div>
+
+        <div class="field">
+          <svg class="input-icon" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+          </svg>
+          <input
+            class="input-field"
+            type="password"
+            placeholder="Password"
+            [(ngModel)]="regPassword"
+            name="regPassword"
+            required
+          />
+        </div>
+
+        <div class="btn">
+          <button type="submit" class="button2">Sign Up</button>
+        </div>
+
+        <p *ngIf="regError" class="error">{{ regError }}</p>
+      </form>
+    </div>
+  </div>
+
+</div>
