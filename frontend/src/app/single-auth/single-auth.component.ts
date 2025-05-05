@@ -1,8 +1,9 @@
-import { Component }    from '@angular/core';
+import { Component, OnInit }    from '@angular/core';
 import { Router }       from '@angular/router';
 import { AuthService }  from '../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule }  from '@angular/forms';
+
 
 @Component({
   selector: 'app-auth',
@@ -11,7 +12,8 @@ import { FormsModule }  from '@angular/forms';
   templateUrl: './single-auth.component.html',
   styleUrls: ['./single-auth.component.css']
 })
-export class SingleAuthComponent {
+export class SingleAuthComponent implements OnInit{
+  formVisible = false;
   loginEmail    = '';
   loginPassword = '';
   loginError    = '';
@@ -19,6 +21,11 @@ export class SingleAuthComponent {
   regEmail    = '';
   regPassword = '';
   regError    = '';
+
+  ngOnInit() {
+    setTimeout(() => this.formVisible = true, 50);
+    document.body.classList.add('light-theme');
+  }
 
   constructor(private auth: AuthService, private router: Router) {}
 

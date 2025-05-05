@@ -6,6 +6,12 @@
   gap: 2rem;
   padding: 0 1rem;
   box-sizing: border-box;
+  opacity: 0;
+  transition: opacity 3s ease;
+}
+
+.auth-container.visible {
+  opacity: 1;
 }
 
 .card {
