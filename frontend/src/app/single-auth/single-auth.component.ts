@@ -14,17 +14,16 @@ import { FormsModule }  from '@angular/forms';
 })
 export class SingleAuthComponent implements OnInit{
   formVisible = false;
-  loginEmail    = '';
+  loginEmail = '';
   loginPassword = '';
-  loginError    = '';
+  loginError = '';
   regUsername = '';
-  regEmail    = '';
+  regEmail = '';
   regPassword = '';
-  regError    = '';
+  regError = '';
 
   ngOnInit() {
     setTimeout(() => this.formVisible = true, 50);
-    document.body.classList.add('light-theme');
   }
 
   constructor(private auth: AuthService, private router: Router) {}
@@ -32,19 +31,22 @@ export class SingleAuthComponent implements OnInit{
   onLogin() {
     this.loginError = '';
     this.auth.login(this.loginEmail, this.loginPassword).subscribe({
-      next: () => this.router.navigate(['/create-portfolio']),
+      next: () => this.router.navigate(['/choose']),
       error: err => this.loginError = err.error?.message || 'Login failed'
     });
   }
 
   onRegister() {
-    this.regError = '';
-    this.auth.register(this.regUsername, this.regEmail, this.regPassword).subscribe({
-      next: () => {
-        this.loginEmail = this.regEmail;
-        this.loginPassword = '';
-      },
-      error: err => this.regError = err.error?.message || 'Registration failed'
-    });
+    this.auth.register(this.regUsername, this.regEmail, this.regPassword)
+      .subscribe({
+        next: () => {
+          this.auth.login(this.regEmail, this.regPassword)
+            .subscribe({
+              next: () => this.router.navigate(['/choose']),
+            });
+        },
+        error: err => this.regError = err.error?.message || 'Registration failed'
+      });
   }
+
 }

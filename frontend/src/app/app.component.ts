@@ -1,14 +1,24 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-
+import { Component }             from '@angular/core';
+import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+import { filter }                from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  template: `<router-outlet></router-outlet>`,
 })
 export class AppComponent {
   title = 'Capstone';
+  constructor(private router: Router) {
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe((e: NavigationEnd) => {
+        if (e.urlAfterRedirects === '/') {
+          document.body.classList.remove('light-theme');
+        } else {
+          document.body.classList.add('light-theme');
+        }
+      });
+  }
 }

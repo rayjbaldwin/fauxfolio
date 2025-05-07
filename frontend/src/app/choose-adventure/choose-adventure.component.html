@@ -1,0 +1,54 @@
+<div class="auth-container" [class.visible]="formVisible">
+
+  <div class="card">
+    <div class="card2">
+      <div class="form">
+        <h2 id="heading">Create New Portfolio</h2>
+        <form (ngSubmit)="createPortfolio()" #portfolioForm="ngForm">
+          <label for="name">Portfolio Name:</label>
+          <input
+            type="text"
+            id="name"
+            [(ngModel)]="portfolioName"
+            name="name"
+            required
+            class="input-field"
+          />
+          <div class="btn">
+            <button type="submit" class="button1" [disabled]="!portfolioName">
+              Save Portfolio
+            </button>
+          </div>
+        </form>
+        <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="separator"></div>
+
+  <div class="card">
+    <div class="card2">
+      <div class="form">
+        <h2 id="heading">View Existing Portfolios</h2>
+        <ul *ngIf="!loading && portfolios.length > 0" class="portfolio-list">
+          <li *ngFor="let p of portfolios">{{ p.name }}</li>
+        </ul>
+        <p *ngIf="loading" class="error">Loading…</p>
+        <p *ngIf="!loading && portfolios.length === 0" class="error">
+          No portfolios found
+        </p>
+        <div class="btn">
+          <button
+            class="button2"
+            [disabled]="portfolios.length === 0 || loading"
+            (click)="viewExisting()"
+          >
+            View
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

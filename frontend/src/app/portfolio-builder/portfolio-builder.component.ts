@@ -89,7 +89,6 @@ export class PortfolioBuilderComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (!result || result <= 0) return;
 
-      // Update in‑memory
       const existing = this.portfolio!.stocks.find(s => s.ticker === ticker);
       if (existing) {
         existing.shares += result;
