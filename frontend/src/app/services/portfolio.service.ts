@@ -35,6 +35,10 @@ export class PortfolioService {
     return this.http.post(`${this.stockUrl}/history`, { ticker, startDate, endDate });
   }
 
+  removeStock(portfolioId: number, ticker: string): Observable<any> {
+    return this.http.delete(`${this.portfolioUrl}/${portfolioId}/stocks/${ticker}`);
+  }
+
   getAllStocks(): Observable<{ ticker: string; name: string }[]> {
     return this.http.get<{ ticker: string; name: string }[]>(`${this.stockUrl}`);
   }

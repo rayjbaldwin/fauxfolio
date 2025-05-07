@@ -4,7 +4,8 @@ const {
   getPortfolio,
   simulatePortfolio,
   createPortfolio,
-  updatePortfolio
+  updatePortfolio,
+  removeStock
 } = require('../controllers/portfolioController');
 const { authenticateToken } = require('../middleware/authMiddleware');
 
@@ -16,5 +17,6 @@ router.post('/', createPortfolio);
 router.get('/:id', getPortfolio);
 router.put('/:id', updatePortfolio);
 router.get('/:id/simulate', simulatePortfolio);
+router.delete('/:id/stocks/:ticker', removeStock);
 
 module.exports = router;

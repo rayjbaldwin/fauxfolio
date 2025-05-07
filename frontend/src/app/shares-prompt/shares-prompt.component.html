@@ -1,12 +1,22 @@
-<h1 mat-dialog-title>Enter Number of Shares</h1>
-<div mat-dialog-content>
-  <p>You are adding: <strong>{{ data.ticker }}</strong></p>
-  <mat-form-field appearance="fill" style="width: 100%;">
+<h2 mat-dialog-title>
+  How many shares of {{ data.ticker }}?
+</h2>
+
+<mat-dialog-content>
+  <mat-form-field appearance="fill" style="width:100%">
     <mat-label>Number of Shares</mat-label>
-    <input matInput type="number" [(ngModel)]="shares" />
+    <input
+      matInput
+      type="number"
+      [(ngModel)]="shares"
+      min="1"
+    />
   </mat-form-field>
-</div>
-<div mat-dialog-actions align="end">
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
   <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-button color="primary" (click)="onConfirm()">Confirm</button>
-</div>
+  <button mat-flat-button color="primary" (click)="onConfirm()">
+    OK
+  </button>
+</mat-dialog-actions>

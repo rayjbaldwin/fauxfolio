@@ -1,14 +1,14 @@
 <div class="container">
-  <div class="column">
+  <div class="column"
+       (dragover)="onDragOver($event)"
+       (drop)="onStockListDrop($event)">
     <h2>Available Stocks</h2>
-
-    <div class="search-box">
-      <input
-        type="text"
-        placeholder="Search by ticker or company name…"
-        [(ngModel)]="searchTerm"
-      />
-    </div>
+    <input
+      class="search-box"
+      type="text"
+      placeholder="Search…"
+      [(ngModel)]="searchTerm"
+    />
 
     <div class="stock-list scrollable">
       <div
@@ -17,28 +17,26 @@
         draggable="true"
         (dragstart)="onDragStart($event, stock.ticker)"
       >
-        <strong>{{ stock.ticker }}</strong> <br> — <br> {{ stock.name }}
+        <strong>{{stock.ticker}}</strong><br>{{stock.name}}
       </div>
-      <p *ngIf="filteredStocks.length === 0">
-        No matching stocks found.
-      </p>
+      <p *ngIf="filteredStocks.length===0">No matching stocks</p>
     </div>
   </div>
 
-  <div class="column">
-    <h2>{{ portfolio?.name || 'Unnamed' }}</h2>
+  <div class="column"
+       (dragover)="onDragOver($event)"
+       (drop)="onDrop($event)">
+    <h2>{{portfolio?.name || 'Unnamed'}}</h2>
 
-    <div
-      class="drop-zone"
-      (dragover)="onDragOver($event)"
-      (drop)="onDrop($event)"
-    >
-      <p *ngIf="!portfolio?.stocks || portfolio?.stocks?.length === 0">
-        Drag stocks here to build your portfolio
-      </p>
-      <div *ngFor="let item of portfolio?.stocks" class="portfolio-item">
-        <span>{{ item.ticker }}</span>
-        <span>{{ item.shares }} shares</span>
+    <div class="drop-zone">
+      <p *ngIf="!portfolio?.stocks?.length">Drag stocks here</p>
+      <div *ngFor="let item of portfolio?.stocks"
+           class="portfolio-item"
+           draggable="true"
+           (dragstart)="onRemoveDragStart($event, item.ticker)"
+           (dblclick)="editShares(item)">
+        <span>{{item.ticker}}</span>
+        <span>{{item.shares | number:'1.2-2' }}</span>
       </div>
     </div>
   </div>

@@ -1,21 +1,15 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import { ActivatedRoute, Router }       from '@angular/router';
-import { PortfolioService }             from '../services/portfolio.service';
-import { CommonModule, NgForOf, NgIf }  from '@angular/common';
-import { FormsModule }                  from '@angular/forms';
-import { MatDialog, MatDialogModule }   from '@angular/material/dialog';
-import { SharesPromptComponent }        from '../shares-prompt/shares-prompt.component';
+import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { SharesPromptComponent } from '../shares-prompt/shares-prompt.component';
+import { PortfolioService } from '../services/portfolio.service';
 
 @Component({
   selector: 'app-portfolio-builder',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatDialogModule,
-    NgForOf,
-    NgIf
-  ],
+  imports: [ CommonModule, FormsModule, MatDialogModule, NgForOf, NgIf ],
   templateUrl: './portfolio-builder.component.html',
   styleUrls: ['./portfolio-builder.component.css']
 })
@@ -27,9 +21,8 @@ export class PortfolioBuilderComponent implements OnInit {
   availableStocks: { ticker: string; name: string }[] = [];
   searchTerm = '';
   portfolioId = 0;
-
   readonly simStart = '2025-03-01';
-  readonly simEnd   = '2025-05-02';
+  readonly simEnd = '2025-05-02';
 
   constructor(
     private route: ActivatedRoute,
@@ -46,79 +39,93 @@ export class PortfolioBuilderComponent implements OnInit {
         this.loadPortfolio();
       }
     });
-
     this.portfolioService.getAllStocks().subscribe({
-      next: stocks => (this.availableStocks = stocks),
-      error: err => console.error('Could not load stock list:', err)
+      next: stocks => this.availableStocks = stocks,
+      error: err => console.error(err)
     });
   }
 
   get filteredStocks() {
-    const term = this.searchTerm.trim().toLowerCase();
-    if (!term) return this.availableStocks;
-    return this.availableStocks.filter(s =>
-      s.ticker.toLowerCase().includes(term) ||
-      s.name.toLowerCase().includes(term)
-    );
+    const t = this.searchTerm.trim().toLowerCase();
+    return t
+      ? this.availableStocks.filter(s =>
+        s.ticker.toLowerCase().includes(t) ||
+        s.name.toLowerCase().includes(t)
+      )
+      : this.availableStocks;
   }
 
-  loadPortfolio(): void {
-    this.portfolioService.getPortfolio(this.portfolioId).subscribe(data => {
-      this.portfolio = data;
-    });
+  loadPortfolio() {
+    this.portfolioService.getPortfolio(this.portfolioId).subscribe(p => this.portfolio = p);
   }
 
-  onDragStart(event: DragEvent, ticker: string) {
-    event.dataTransfer?.setData('text/plain', ticker);
+  onDragStart(ev: DragEvent, ticker: string) {
+    ev.dataTransfer?.setData('text/plain', ticker);
+  }
+  onRemoveDragStart(ev: DragEvent, ticker: string) {
+    ev.dataTransfer?.setData('text/plain', `remove:${ticker}`);
+  }
+  onDragOver(ev: DragEvent) {
+    ev.preventDefault();
   }
 
-  onDragOver(event: DragEvent) {
-    event.preventDefault();
+  onDrop(ev: DragEvent) {
+    ev.preventDefault();
+    const data = ev.dataTransfer?.getData('text/plain');
+    if (!data || data.startsWith('remove:')) return;
+    this.openSharePrompt(data);
   }
 
-  onDrop(event: DragEvent) {
-    event.preventDefault();
-    const ticker = event.dataTransfer?.getData('text/plain');
-    if (!ticker || !this.portfolio) return;
+  onStockListDrop(ev: DragEvent) {
+    ev.preventDefault();
+    const data = ev.dataTransfer?.getData('text/plain');
+    if (data?.startsWith('remove:')) {
+      const ticker = data.split(':')[1];
+      this.removeStock(ticker);
+    }
+  }
 
+  private openSharePrompt(ticker: string, initialShares?: number) {
     const dialogRef = this.dialog.open(SharesPromptComponent, {
-      data: { ticker },
+      data: { ticker, shares: initialShares },
       width: '300px'
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (!result || result <= 0) return;
+      if (!result || result <= 0 || !this.portfolio) return;
 
-      const existing = this.portfolio!.stocks.find(s => s.ticker === ticker);
+      const existing = this.portfolio.stocks.find(s => s.ticker === ticker);
       if (existing) {
-        existing.shares += result;
+        existing.shares = initialShares != null ? result : existing.shares + result;
       } else {
-        this.portfolio!.stocks.push({ ticker, shares: result });
+        this.portfolio.stocks.push({ ticker, shares: result });
       }
 
       this.portfolioService
-        .updatePortfolio(this.portfolioId, this.portfolio!.stocks)
+        .updatePortfolio(this.portfolioId, this.portfolio.stocks)
         .subscribe(() => {
-          this.portfolioService
-            .fetchStockHistory(ticker, this.simStart, this.simEnd)
-            .subscribe({
-              next: () =>
-                console.log(
-                  `Historical data fetched for ${ticker}`
-                ),
-              error: err =>
-                console.error(
-                  `Error fetching history for ${ticker}:`,
-                  err
-                )
-            });
+          if (!existing) {
+            this.portfolioService.fetchStockHistory(ticker, this.simStart, this.simEnd)
+              .subscribe();
+          }
         });
     });
   }
 
-  goToSimulation(): void {
-    if (this.portfolioId) {
-      this.router.navigate(['/simulate', this.portfolioId]);
-    }
+  removeStock(ticker: string) {
+    if (!this.portfolio) return;
+    this.portfolio.stocks = this.portfolio.stocks.filter(s => s.ticker !== ticker);
+
+    this.portfolioService
+      .removeStock(this.portfolioId, ticker)
+      .subscribe();
+  }
+
+  editShares(item: { ticker: string; shares: number }) {
+    this.openSharePrompt(item.ticker, item.shares);
+  }
+
+  goToSimulation() {
+    this.router.navigate(['/simulate', this.portfolioId]);
   }
 }

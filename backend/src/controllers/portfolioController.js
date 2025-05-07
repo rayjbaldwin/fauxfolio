@@ -73,6 +73,22 @@ async function updatePortfolio(req, res) {
   }
 }
 
+async function removeStock(req, res) {
+  const { id, ticker } = req.params;
+  try {
+    await pool.query(
+      `DELETE FROM portfolio_stocks
+         WHERE portfolio_id = $1
+           AND ticker = $2`,
+      [id, ticker]
+    );
+    res.json({ message: `Removed ${ticker} from portfolio ${id}.` });
+  } catch (err) {
+    console.error('Error removing stock:', err);
+    res.status(500).json({ message: 'Could not remove stock.' });
+  }
+}
+
 async function simulatePortfolio(req, res) {
   const { id } = req.params;
   const { startDate, endDate } = req.query;
@@ -167,5 +183,6 @@ module.exports = {
   getPortfolio,
   updatePortfolio,
   simulatePortfolio,
-  listPortfolios
+  listPortfolios,
+  removeStock
 };
