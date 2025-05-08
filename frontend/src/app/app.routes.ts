@@ -8,6 +8,7 @@ import { RegisterPortfolioComponent } from './register-portfolio/register-portfo
 import { SingleAuthComponent } from './single-auth/single-auth.component';
 import { LandingPageComponent } from './landing-page/landing-page.component';
 import { ChooseAdventureComponent } from './choose-adventure/choose-adventure.component';
+import {ManagePortfolioComponent} from './manage-portfolio/manage-portfolio.component';
 
  // { path: 'login', component: LoginComponent },
  // { path: 'register', component: RegisterComponent },
@@ -19,6 +20,6 @@ export const routes: Routes = [
   { path: 'create-portfolio', component: RegisterPortfolioComponent, canActivate: [AuthGuard] },
   { path: 'portfolio/:id', component: PortfolioBuilderComponent, canActivate: [AuthGuard] },
   { path: 'simulate/:id', component: PortfolioSimulationComponent, canActivate: [AuthGuard] },
-
+  { path: 'portfolio-list', component: ManagePortfolioComponent, canActivate: [AuthGuard] },
   { path: '**', redirectTo: '' }
 ];

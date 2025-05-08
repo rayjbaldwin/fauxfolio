@@ -15,7 +15,6 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
   constructor(private router: Router) {}
 
   ngAfterViewInit(): void {
-
     console.log('particlesJS is', typeof particlesJS);
     if (typeof particlesJS === 'function') {
       particlesJS('particles-js', {
@@ -62,6 +61,7 @@ export class LandingPageComponent implements AfterViewInit, OnDestroy {
   }
 
   goToAuth(): void {
-    setTimeout(() => this.router.navigate(['/auth']), 3000);
+    document.body.classList.add('light-theme');
+    setTimeout(() => this.router.navigate(['/auth']), 2700);
   }
 }

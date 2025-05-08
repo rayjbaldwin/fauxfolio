@@ -1,0 +1,66 @@
+<div class="manage-container">
+  <div class="selector">
+    <select (change)="selectPortfolio($any($event.target).value)">
+      <option *ngFor="let p of portfolios" [value]="p.id">
+        {{ p.name }}
+      </option>
+    </select>
+
+  </div>
+
+  <div class="container">
+    <div
+      class="column"
+      (dragover)="onDragOver($event)"
+      (drop)="onStockListDrop($event)"
+    >
+      <h2>Available Stocks</h2>
+      <input
+        class="search-box"
+        type="text"
+        placeholder="Search…"
+        [(ngModel)]="searchTerm"
+      />
+
+      <div class="stock-list scrollable">
+        <div
+          *ngFor="let stock of filteredStocks"
+          class="stock-item"
+          draggable="true"
+          (dragstart)="onDragStart($event, stock.ticker)"
+        >
+          <strong>{{ stock.ticker }}</strong><br />{{ stock.name }}
+        </div>
+        <p *ngIf="filteredStocks.length === 0">No matching stocks</p>
+      </div>
+    </div>
+
+    <div
+      class="column"
+      (dragover)="onDragOver($event)"
+      (drop)="onDrop($event)"
+    >
+      <h2>{{ portfolio?.name || 'Unnamed' }}</h2>
+
+      <div class="drop-zone">
+        <p *ngIf="!portfolio?.stocks?.length">Drag stocks here</p>
+        <div
+          *ngFor="let item of portfolio?.stocks"
+          class="portfolio-item"
+          draggable="true"
+          (dragstart)="onRemoveDragStart($event, item.ticker)"
+          (dblclick)="editShares(item)"
+        >
+          <span>{{ item.ticker }}</span>
+          <span>{{ item.shares | number:'1.2-2' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="simulate-row" *ngIf="portfolio">
+    <button (click)="goToSimulation()" class="simulate-btn">
+      Simulate this Portfolio
+    </button>
+  </div>
+</div>
