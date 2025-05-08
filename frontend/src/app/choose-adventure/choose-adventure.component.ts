@@ -1,9 +1,9 @@
-import { Component, OnInit }    from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { CommonModule }         from '@angular/common';
-import { PortfolioService }     from '../services/portfolio.service';
-import {AuthService} from '../services/auth.service';
-import {FormsModule} from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { PortfolioService } from '../services/portfolio.service';
+import { AuthService } from '../services/auth.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-choose-adventure',

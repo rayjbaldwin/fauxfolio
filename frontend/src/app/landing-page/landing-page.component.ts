@@ -1,6 +1,6 @@
 import { Component, AfterViewInit, OnDestroy } from '@angular/core';
-import { Router, RouterModule }                from '@angular/router';
-import { CommonModule }                        from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 declare const particlesJS: any;
 

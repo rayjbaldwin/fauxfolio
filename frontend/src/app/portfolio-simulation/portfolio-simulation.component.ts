@@ -1,10 +1,10 @@
-import { Component, OnInit, OnDestroy }            from '@angular/core';
-import { ActivatedRoute }                            from '@angular/router';
-import { PortfolioService }                          from '../services/portfolio.service';
-import { Chart, registerables }                      from 'chart.js';
-import { Subscription }                              from 'rxjs';
-import { CommonModule, NgForOf, NgIf }               from '@angular/common';
-import { FormsModule }                               from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { PortfolioService } from '../services/portfolio.service';
+import { Chart, registerables } from 'chart.js';
+import { Subscription } from 'rxjs';
+import { CommonModule, NgForOf, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 Chart.register(...registerables);
 
@@ -23,7 +23,6 @@ interface PortfolioSummary {
 export class PortfolioSimulationComponent implements OnInit, OnDestroy {
   portfolios: PortfolioSummary[] = [];
   selectedId!: number;
-
   private subscription: Subscription | null = null;
   simulationChart: Chart | null = null;
 
@@ -96,7 +95,17 @@ export class PortfolioSimulationComponent implements OnInit, OnDestroy {
           tension: 0.1
         }]
       },
-      options: { responsive: true }
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: '$'
+            },
+            }
+          }
+        }
     });
   }
 }
