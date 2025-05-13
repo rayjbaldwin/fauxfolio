@@ -22,8 +22,8 @@ Fauxfolio is a web application that lets  users build and simulate stock portfol
 #### Clone the project
 
 ```bash
-  git clone https://github.com/your‑username/fauxfolio.git
-  cd fauxfolio
+git clone https://github.com/your‑username/fauxfolio.git
+cd fauxfolio
 ```
 
 #### Backend
