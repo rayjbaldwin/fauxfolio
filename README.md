@@ -1,59 +1,67 @@
-# Capstone
+# Fauxfolio
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.7.
+Fauxfolio is a web application that lets  users build and simulate stock portfolios in a drag‑and‑drop interface. It fetches historical prices from the Polygon.io API, caches them in PostgreSQL, and visualizes portfolio performance with Chart.js.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- User Authentication: JWT‑based login & registration with protected API routes.
+- Portfolio Management: Create, update, and delete portfolios; drag & drop stocks into your portfolio; adjust share counts.
+- Historical Data Caching: Automatically fetch and cache daily close prices for trading days, skipping weekends and holidays.
+- Batch & Concurrent Fetching: Speed up data loading by running API requests in parallel.
+- Simulation & Visualization: Simulate portfolio value over a fixed date range and display a dynamic line chart that changes color based on performance trend.
 
-```bash
-ng serve
-```
+## Technology Stack
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Frontend: Angular + Chart.js + Angular Material dialogs
+- Backend: Node.js + Express.js + JWT + bcrypt
+- Database: PostgreSQL (hosted on AWS)
+- APIs & Services: Polygon.io for stock data; date‑holidays for U.S. market calendar
 
-## Code scaffolding
+## Setup & Installation
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+#### Clone the project
 
 ```bash
-ng build
+  git clone https://github.com/your‑username/fauxfolio.git
+  cd fauxfolio
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+#### Backend
 
 ```bash
-ng test
+cd backend
+npm install
+npm start     # runs on http://localhost:3000
 ```
 
-## Running end-to-end tests
+#### Environment Variables
 
-For end-to-end (e2e) testing, run:
+To run this project, you will need to add the following environment variables to your .env file
+
+`JWT_SECRET`
+
+`POLYGON_API_KEY`
+
+
+#### Frontend
 
 ```bash
-ng e2e
+cd ../frontend
+npm install
+ng serve      # runs on http://localhost:4200
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+#### To Run Everything at Once
 
-## Additional Resources
+```bash
+cd fauxfolio
+npm run start:all  # starts both backend server and frontend application
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Roadmap
+
+- Deploy fully to AWS with Terraform 
+- Add CI/CD pipeline with GitHub Actions
+- Expand user experience (User profile management, gamification, etc.)
+- Ensure acessibility
+- Security
