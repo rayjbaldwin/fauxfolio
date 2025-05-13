@@ -12,9 +12,9 @@ Fauxfolio is a web application that lets  users build and simulate stock portfol
 
 ## Technology Stack
 
-- Frontend: Angular + Chart.js + Angular Material dialogs
+- Frontend: Angular + Chart.js + Angular Material dialogs + Particles.js
 - Backend: Node.js + Express.js + JWT + bcrypt
-- Database: PostgreSQL (hosted on AWS)
+- Database: PostgreSQL (hosted on AWS RDS)
 - APIs & Services: Polygon.io for stock data; date‑holidays for U.S. market calendar
 
 ## Setup & Installation
@@ -22,8 +22,8 @@ Fauxfolio is a web application that lets  users build and simulate stock portfol
 #### Clone the project
 
 ```bash
-git clone https://github.com/your‑username/fauxfolio.git
-cd fauxfolio
+  git clone https://github.com/rayjbaldwin/fauxfolio.git
+  cd fauxfolio
 ```
 
 #### Backend
@@ -58,7 +58,122 @@ cd fauxfolio
 npm run start:all  # starts both backend server and frontend application
 ```
 
-## Roadmap
+
+## API Reference
+
+⚠️ Authentication Required ⚠️
+
+All endpoints except /api/auth/register and /api/auth/login require a valid JWT token.
+
+Include the following header in your requests:
+
+``` Bash
+Authorization: Bearer your-jwt-token-here
+```
+
+### Stock Date
+
+#### Fetch Stock Information and Store
+
+```Bash
+  POST /api/stocks/history
+```
+
+| Parameter | Type     | Description                |
+| :-------- | :------- | :------------------------- |
+| `ticker` | `string` | **Required**. Stock ticker symbol (e.g., "GOOG") |
+| `startDate`| `string` | **Required**. Start date in 'YYYY-MM-DD' format |
+| `endDate`| `string` | **Required**. End date in 'YYYY-MM-DD' format |
+
+
+### Portfolios
+
+#### Create a Portfolio
+
+```Bash
+  POST /api/portfolios
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `user_id`      | `string` | **Required**. ID of user creating the portfolio |
+| `name`      | `string` | **Required**. Name of the portfolio |
+
+#### Get Portfolio Details
+
+```Bash
+  GET /api/portfolios/${id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Required**. ID of portfolio to fetch |
+
+#### Update Portfolio
+
+```Bash
+  PUT /api/portfolios/${id}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Required**. ID of portfolio to update |
+
+
+#### Remove Stock from Portfolio
+
+```Bash
+  DELETE /api/portfolios/${id}/stocks/${ticker}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Required**. ID of portfolio |
+| `ticker`      | `string` | **Required**. Ticker symbol of stock to remove |
+
+#### Simulate Portfolio Performance
+
+```Bash
+  GET /api/portfolios/${id}/simulate?startDate=${startDate}&endDate=${endDate}
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `id`      | `string` | **Required**. ID of portfolio to simulate |
+| `id`      | `string` | **Required**. Ticker symbol of stock to remove |
+| `startDate`| `string` | **Required**. Start date in 'YYYY-MM-DD' format |
+| `endDate`| `string` | **Required**. End date in 'YYYY-MM-DD' format |
+
+
+### User Management
+
+#### Register User
+
+```Bash
+  POST /api/auth/register
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `username`      | `string` | **Required**. Username for the new account |
+| `email`      | `string` | **Required**. Email address |
+| `password`      | `string` | **Required**. Password |
+
+
+#### User Login
+
+```Bash
+  POST /api/auth/login
+```
+
+| Parameter | Type     | Description                       |
+| :-------- | :------- | :-------------------------------- |
+| `email`      | `string` | **Required**. Email address |
+| `password`      | `string` | **Required**. Password |
+
+
+
+## Future Roadmap
 
 - Deploy fully to AWS with Terraform 
 - Add CI/CD pipeline with GitHub Actions
