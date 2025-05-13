@@ -1,4 +1,5 @@
 const pool = require('../db');
+const {fetchStockHistory} = require("../services/polygonService");
 
 async function listStocks(req, res) {
   try {
@@ -24,4 +25,19 @@ async function saveStockPrice(ticker, date, closePrice) {
   }
 }
 
-module.exports = { saveStockPrice, listStocks };
+async function stockHistory(req, res) {
+  const { ticker, startDate, endDate } = req.body;
+  if (!ticker || !startDate || !endDate) {
+    return res.status(400).json({ message: "Ticker, startDate, and endDate are required." });
+  }
+  try {
+    await fetchStockHistory(ticker, startDate, endDate);
+    res.json({ message: `Historical data for ${ticker} fetched and stored.` });
+  } catch (error) {
+    console.error('Error in stockHistory:', error);
+    res.status(500).json({ message: "Error fetching history." });
+  }
+}
+
+
+module.exports = { saveStockPrice, listStocks, stockHistory };
