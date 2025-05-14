@@ -1,11 +1,10 @@
 const express = require('express');
 const { listStocks, stockHistory } = require('../controllers/stockController');
-// const { fetchStockHistory } = require('../services/polygonService');
 const { authenticateToken } = require('../middleware/authMiddleware');
+// const { fetchStockHistory } = require("../services/polygonService");
 const router = express.Router();
 
 router.get('/', listStocks);
-
 router.post('/history', authenticateToken, stockHistory);
 
 // router.post('/history', async (req, res) => {
@@ -20,5 +19,4 @@ router.post('/history', authenticateToken, stockHistory);
 //     res.status(500).json({ message: "Error fetching history.", error: error.message });
 //   }
 // });
-
 module.exports = router;

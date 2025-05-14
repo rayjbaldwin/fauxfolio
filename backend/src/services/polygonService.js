@@ -1,6 +1,6 @@
 const axios = require('axios');
 const moment = require('moment-timezone');
-const { saveStockPrice } = require('../controllers/stockController');
+const { stockHistory } = require('../controllers/stockController');
 const pool = require('../db');
 require('dotenv').config();
 
@@ -14,6 +14,16 @@ function isTradingDay(mDate) {
   }
   const holiday = hd.isHoliday(mDate.toDate());
   return !holiday;
+}
+
+async function saveStockPrice(ticker, date, closePrice) {
+  const q = `
+    INSERT INTO historical_prices (ticker, date, close_price)
+    VALUES ($1, $2, $3)
+    ON CONFLICT (ticker, date)
+    DO UPDATE SET close_price = EXCLUDED.close_price;
+  `;
+  await pool.query(q, [ticker, date, closePrice]);
 }
 
 async function fetchStockPrice(ticker, dateStr) {
