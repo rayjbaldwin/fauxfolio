@@ -140,7 +140,6 @@ Authorization: Bearer your-jwt-token-here
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
 | `id`      | `string` | **Required**. ID of portfolio to simulate |
-| `id`      | `string` | **Required**. Ticker symbol of stock to remove |
 | `startDate`| `string` | **Required**. Start date in 'YYYY-MM-DD' format |
 | `endDate`| `string` | **Required**. End date in 'YYYY-MM-DD' format |
 
