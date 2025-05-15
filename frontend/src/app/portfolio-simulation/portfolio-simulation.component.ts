@@ -9,7 +9,7 @@ import { FormsModule } from '@angular/forms';
 Chart.register(...registerables);
 
 interface PortfolioSummary {
-  id:   number;
+  id: number;
   name: string;
 }
 
@@ -27,7 +27,7 @@ export class PortfolioSimulationComponent implements OnInit, OnDestroy {
   simulationChart: Chart | null = null;
 
   startDate = '2025-03-03';
-  endDate   = '2025-05-02';
+  endDate = '2025-05-02';
 
   constructor(
     private route: ActivatedRoute,

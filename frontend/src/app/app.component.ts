@@ -1,6 +1,6 @@
-import { Component }             from '@angular/core';
+import { Component } from '@angular/core';
 import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
-import { filter }                from 'rxjs/operators';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +9,7 @@ import { filter }                from 'rxjs/operators';
   template: `<router-outlet></router-outlet>`,
 })
 export class AppComponent {
-  title = 'Capstone';
+  title = 'Fauxfolio';
   constructor(private router: Router) {
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
