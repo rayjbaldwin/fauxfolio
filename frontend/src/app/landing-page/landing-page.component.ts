@@ -1,3 +1,6 @@
+// Initializes a dynamic particles.js animation after view load, tears it down on destroy, and transitions to the auth page with a light-theme effect.
+
+
 import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';

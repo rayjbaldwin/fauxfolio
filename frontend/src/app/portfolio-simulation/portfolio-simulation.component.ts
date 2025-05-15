@@ -1,3 +1,6 @@
+// Renders user portfolios, run date-range simulation, and render results via Chart.js
+
+
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PortfolioService } from '../services/portfolio.service';

@@ -1,3 +1,4 @@
+// Combined login/register form. Toggles form visibility, handles authentication via AuthService
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';

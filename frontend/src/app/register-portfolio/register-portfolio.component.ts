@@ -1,3 +1,4 @@
+// Creates new portfolio with name, registers it, and navigates to portfolio
 import { Component } from '@angular/core';
 import { PortfolioService } from '../services/portfolio.service';
 import { Router } from '@angular/router';

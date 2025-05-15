@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
+// Registers a user and adds to DB. Hashes the password.
 async function register(req, res) {
   const { username, email, password } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -21,6 +22,7 @@ async function register(req, res) {
   }
 }
 
+// Logs a user in via authentication. Returns JWT for use
 async function login(req, res) {
   const { email, password } = req.body;
 

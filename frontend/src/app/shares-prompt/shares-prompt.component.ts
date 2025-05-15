@@ -1,3 +1,4 @@
+// Prompts the user to enter the number of shares, initializes with a default value, and returns the input or cancels.
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

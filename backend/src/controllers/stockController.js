@@ -1,6 +1,7 @@
 const pool = require('../db');
 const { fetchStockHistory } = require("../services/polygonService");
 
+// Gets all stocks
 async function listStocks(req, res) {
   try {
     const result = await pool.query('SELECT ticker, name FROM stocks ORDER BY ticker');
@@ -25,6 +26,7 @@ async function listStocks(req, res) {
 //   }
 // }
 
+// Fetches and stores historical stock data for ticker over date range
 async function stockHistory(req, res) {
   const { ticker, startDate, endDate } = req.body;
   if (!ticker || !startDate || !endDate) {

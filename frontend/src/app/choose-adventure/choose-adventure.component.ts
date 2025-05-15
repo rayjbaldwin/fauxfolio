@@ -1,3 +1,5 @@
+// Fetches and displays the user’s portfolios on load, shows a form to create a new portfolio or navigate to existing ones, and handles routing and error messages.
+
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';

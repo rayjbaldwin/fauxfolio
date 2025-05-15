@@ -1,6 +1,7 @@
 const pool = require('../db');
 const moment = require('moment');
 
+// Creates new user portfolio and returns record
 async function createPortfolio(req, res) {
   const { user_id, name } = req.body;
   if (!user_id || !name) {
@@ -20,6 +21,7 @@ async function createPortfolio(req, res) {
   }
 }
 
+//Retrieves portfolio by ID, returns its stock data
 async function getPortfolio(req, res) {
   const { id } = req.params;
   try {
@@ -49,6 +51,7 @@ async function getPortfolio(req, res) {
   }
 }
 
+// Updates a specific portfolios stocks and shares
 async function updatePortfolio(req, res) {
   const { id } = req.params;
   const { stocks } = req.body;
@@ -73,6 +76,7 @@ async function updatePortfolio(req, res) {
   }
 }
 
+// Deletes a specific stock from portfolio
 async function removeStock(req, res) {
   const { id, ticker } = req.params;
   try {
@@ -89,6 +93,7 @@ async function removeStock(req, res) {
   }
 }
 
+// Simulates performance over data range. Calculates total value and returns array of dates and values
 async function simulatePortfolio(req, res) {
   const { id } = req.params;
   const { startDate, endDate } = req.query;
@@ -161,6 +166,7 @@ async function simulatePortfolio(req, res) {
   }
 }
 
+// Gets all portfolios belonging to specific user
 async function listPortfolios(req, res) {
   const userId = req.user.user_id;
   try {

@@ -1,3 +1,5 @@
+//Manages a users portfolio. Loads portfolios and available stocks, supports drag-and-drop to add/remove stocks, navigates to simulation
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule, NgForOf, NgIf } from '@angular/common';

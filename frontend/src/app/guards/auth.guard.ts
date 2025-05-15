@@ -1,3 +1,6 @@
+
+// Route guard that allows access only if a valid auth token exists, otherwise redirects to the login page.
+
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { AuthService } from '../services/auth.service';

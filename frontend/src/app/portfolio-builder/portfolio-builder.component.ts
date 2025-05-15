@@ -1,3 +1,5 @@
+//Loads specific portfolio by ID, fetches stocks, drag-and-drop functionality, navigate to simulation
+
 import { Component, OnInit, NgZone } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, NgForOf, NgIf } from '@angular/common';

@@ -7,6 +7,7 @@ require('dotenv').config();
 const Holidays = require('date-holidays');
 const hd = new Holidays('US');
 
+// Checks if day is !weekend or !holiday
 function isTradingDay(mDate) {
   const dayOfWeek = mDate.day();
   if (dayOfWeek === 0 || dayOfWeek === 6) {
@@ -16,6 +17,7 @@ function isTradingDay(mDate) {
   return !holiday;
 }
 
+// Updates closing price for stock
 async function saveStockPrice(ticker, date, closePrice) {
   const q = `
     INSERT INTO historical_prices (ticker, date, close_price)
@@ -26,6 +28,7 @@ async function saveStockPrice(ticker, date, closePrice) {
   await pool.query(q, [ticker, date, closePrice]);
 }
 
+// gets a stocks data for a specific data from Polygon.io
 async function fetchStockPrice(ticker, dateStr) {
   try {
     const response = await axios.get(
@@ -49,6 +52,7 @@ async function fetchStockPrice(ticker, dateStr) {
   }
 }
 
+// Checks caches prices in DB for optimization
 async function getCachedStockPrice(ticker, dateStr) {
   const result = await pool.query(
     'SELECT close_price FROM historical_prices WHERE ticker = $1 AND date = $2',
@@ -69,7 +73,7 @@ async function getCachedStockPrice(ticker, dateStr) {
   return { stockData, cached: false };
 }
 
-
+// Fetch and caches stocks closing price for specific date range
 async function fetchStockHistory(ticker, startDate, endDate) {
   let currentMoment = moment.tz(startDate, 'YYYY-MM-DD', 'America/New_York');
   const endMoment = moment.tz(endDate, 'YYYY-MM-DD', 'America/New_York');

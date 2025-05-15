@@ -1,3 +1,5 @@
+// Adds Bearer token to head of HTTP request
+
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { Observable } from 'rxjs';
